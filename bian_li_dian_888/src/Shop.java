@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,20 +30,20 @@ public class Shop {
     }
 
     //采购商品
-    public void addPro(Product pro, double price, int count) {//采购
+    public void addPro(Product pro, double amount, int count) {//采购
         if(!pros.containsKey(pro.name)){//如果商品不存在
             pros.put(pro.name,pro);//添加商品信息
         }
         pros.get(pro.name).count+=count;//更新商品库存
 
-        records.add(new Record(pro.name, LocalDateTime.now(), count, price*count, price, 0));
+        records.add(new Record(pro.name, LocalDateTime.now(), count, amount*count, 0,0));
     }
 
     //销售商品
     public int sell(String procode,double price,int count) {//销售
         if(pros.containsKey(procode) && pros.get(procode).count>=count){
             pros.get(procode).count-=count;
-            records.add(new Record(procode, LocalDateTime.now(), count, price*count, price, 1));
+            records.add(new Record(procode, LocalDateTime.now(), count, 0, price*count, 1));
             return 1;
         }
         return 0;
@@ -64,19 +65,33 @@ public class Shop {
     //查看账本
     public void queryRecord(){
         for(Record record:records){
-            System.out.println("时间： "+record.date+", 商品代码： "+record.procode+", 数量： "+record.count+", 金额： "+record.amount+", 单价： "+record.price+", 类型： "+record.type);
+            System.out.println("时间： "+record.date.toLocalDate()+", 商品代码： "+record.procode+", 数量： "+record.count+", 金额： "+(record.amount+record.price)+", 类型： "+record.type);
         }
     }
+
+    //每日利润统计  &&record.date.isEqual(LocalDateTime.now().minusDays(1))
+    public void profit() {
+        double ru=0;//收入
+        double chu=0;//支出
+        for(Record record:records) {
+            if(record.type==0 && record.date.toLocalDate().isEqual(LocalDate.now())) {
+                chu+=(record.amount);
+                System.out.println("支出："+chu);
+            }else if(record.type==1 && record.date.toLocalDate().isEqual(LocalDate.now())) {
+                ru+=(record.price);
+                System.out.println("收入："+ru);
+            }
+        }
+        System.out.println("今日利润为："+(ru-chu));
+    }
+    //个人信息
 
     //修改密码
 
     //行为日志
 
-    //每日利润统计
-
     //会员
 
-    //===上传至GitHub===
 
     public static void main(String[] args) {
         Scanner scanner=new Scanner(System.in);
@@ -144,14 +159,20 @@ public class Shop {
                 }
                 case 4: {
                     shop.queryRecord();
+                    shop.profit();
                     break;
                 }
                 case 5: {
+                    shop.profit();
                     System.exit(0);
                     break;
+                }
+                default:{
+                    System.out.println("输入错误，请重新输入！");
                 }
             }
         }
     }
 
 }
+
