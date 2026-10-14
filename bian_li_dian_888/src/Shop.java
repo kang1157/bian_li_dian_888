@@ -1,10 +1,11 @@
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Shop {
+public class Shop implements Serializable {
     HashMap<String, Product> pros    =new HashMap<>();//商品集合
     ArrayList<Record>        records =new ArrayList<>();//记录集合
     HashMap<String, User>    users   =new HashMap<>();//用户集合
@@ -97,6 +98,24 @@ public class Shop {
         Scanner scanner=new Scanner(System.in);
         Shop shop = new Shop();
         boolean isLogin = false;
+
+        //创建序列化对象文件
+        File file=new File("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                System.out.println("未找到序列化对象文件");
+            }
+        }
+        // 反序列化：文件 -> 对象
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser"))) {
+            shop  = (Shop) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        //登录
         while (!isLogin) {
             System.out.println("用户登录，请输入用户名：");
             String userName = scanner.next();
@@ -164,6 +183,14 @@ public class Shop {
                 }
                 case 5: {
                     shop.profit();
+                    //序列化
+                    try (ObjectOutputStream oos = new ObjectOutputStream(
+                            new FileOutputStream("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser"))) {
+                        oos.writeObject(shop);
+                        System.out.println("对象序列化成功");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     System.exit(0);
                     break;
                 }

@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Record {
+public class Record implements Serializable {
     LocalDateTime date;//日期
     String        procode;//商品编号
     int           count;//数量
