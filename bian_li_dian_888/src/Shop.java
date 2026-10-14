@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class Shop implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+
     HashMap<String, Product> pros    =new HashMap<>();//商品集合
     ArrayList<Record>        records =new ArrayList<>();//记录集合
     HashMap<String, User>    users   =new HashMap<>();//用户集合
@@ -93,6 +98,7 @@ public class Shop implements Serializable {
 
     //会员
 
+    //面板
 
     public static void main(String[] args) {
         Scanner scanner=new Scanner(System.in);
@@ -100,20 +106,27 @@ public class Shop implements Serializable {
         boolean isLogin = false;
 
         //创建序列化对象文件
-        File file=new File("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser");
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                System.out.println("未找到序列化对象文件");
-            }
-        }
+//        File file=new File("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser");
+//        if(!file.exists()){
+//            try {
+//                file.createNewFile();
+//            } catch (IOException e) {
+//                System.out.println("未找到序列化对象文件");
+//            }
+//        }
         // 反序列化：文件 -> 对象
-        try (ObjectInputStream ois = new ObjectInputStream(
-                new FileInputStream("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser"))) {
-            shop  = (Shop) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+//        try (ObjectInputStream ois = new ObjectInputStream(
+//                new FileInputStream("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser"))) {
+//            shop  = (Shop) ois.readObject();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+        Object obj = ObjectUtile.readObjectFromFile("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser");
+        if (obj instanceof Shop) {
+            shop = (Shop) obj;
+            System.out.println("已从文件加载历史数据！");
+        } else {
+            System.out.println("未发现数据文件，使用全新数据！");
         }
         //登录
         while (!isLogin) {
@@ -184,13 +197,14 @@ public class Shop implements Serializable {
                 case 5: {
                     shop.profit();
                     //序列化
-                    try (ObjectOutputStream oos = new ObjectOutputStream(
-                            new FileOutputStream("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser"))) {
-                        oos.writeObject(shop);
-                        System.out.println("对象序列化成功");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                    try (ObjectOutputStream oos = new ObjectOutputStream(
+//                            new FileOutputStream("C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser"))) {
+//                        oos.writeObject(shop);
+//                        System.out.println("对象序列化成功");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+                    ObjectUtile.saveObjectToFile(shop, "C:/JAVA2/xiang_mu/bian_li_dian_888/bian_li_dian_888/src/shop.ser");
                     System.exit(0);
                     break;
                 }

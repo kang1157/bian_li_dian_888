@@ -1,7 +1,12 @@
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class Record implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     LocalDateTime date;//日期
     String        procode;//商品编号
     int           count;//数量
